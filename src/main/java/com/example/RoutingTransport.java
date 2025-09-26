@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-//Custom transport that routes Sentry events to different projects based on event content analysis.
+//Custom transport that routes Sentry events to different projects based on event content
 public class RoutingTransport implements ITransport {
     
     private final ILogger logger;
@@ -20,7 +20,6 @@ public class RoutingTransport implements ITransport {
     private final Map<String, ITransport> transportCache;
     private final SentryOptions baseOptions;
     
-    // DSNs are now defined in SimpleRoutingConfig.PROJECT_BOXES
     private final SimpleRoutingConfig.ProjectBox[] projectBoxes;
     
     public RoutingTransport(SentryOptions options) {

@@ -1,6 +1,6 @@
-# Sentry Transport Demo - Event Multiplexing
+# Sentry Transport Demo
 
-This project demonstrates custom transport implementation in the Sentry Java SDK that multiplexes events to different Sentry projects based on event content analysis.
+This project demonstrates custom transport implementation in the Sentry Java SDK that routes events to different Sentry projects based on event content.
 
 ## Overview
 
@@ -8,7 +8,6 @@ The `RoutingTransport` class implements the `ITransport` interface to:
 - Analyze event content (tags, exceptions, messages) for routing decisions
 - Create HTTP transports for each target DSN with caching
 - Send events to appropriate Sentry projects via real HTTP requests
-- Manage transport lifecycle and rate limiting
 
 ## Routing Configuration
 
@@ -75,41 +74,11 @@ For production environments, consider:
 ### Current Approach
 DSNs and routing rules are defined in `SimpleRoutingConfig.PROJECT_BOXES` array for simplicity and demonstration purposes.
 
-### Production Approach
-For production systems, implement:
-
-1. **External Configuration Files**
-   ```json
-   {
-     "projects": [
-       {
-         "name": "Gateway Project",
-         "dsn": "https://key@sentry.io/project",
-         "rules": {
-           "tags": ["gateway"],
-           "statusCodes": ["502"],
-           "exceptionTypes": ["BadGatewayException"]
-         }
-       }
-     ]
-   }
-   ```
-
-2. **Environment-Specific Configuration**
-   - Different routing rules for development, staging, production
-   - Environment variable-driven DSN configuration
-   - Runtime rule reloading capabilities
-
-3. **Rule Management**
-   - Schema validation for configuration files
-   - Rule precedence and conflict resolution
-   - Audit logging for configuration changes
-
 ## Transport Implementation
 
-This implementation demonstrates proper use of Sentry's official transport extension points:
+This implementation demonstrates use of Sentry's official transport extension points:
 - Implements `ITransport` interface as designed by Sentry
-- Uses `setTransportFactory()` for proper SDK integration
+- Uses `setTransportFactory()` for SDK integration
 - Handles real event envelopes with content analysis
 - Makes actual HTTP requests to Sentry API endpoints
 - Manages transport lifecycle and rate limiting correctly
