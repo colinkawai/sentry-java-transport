@@ -1,0 +1,9 @@
+com/example/RoutingTransport$RealHttpTransport.class
+com/example/SimpleRoutingConfig$ProjectBox.class
+com/example/ErrorController$InternalServerException.class
+com/example/SentryTransportDemoApplication.class
+com/example/ConsoleLogger.class
+com/example/SimpleRoutingConfig.class
+com/example/ErrorController.class
+com/example/ErrorController$BadGatewayException.class
+com/example/RoutingTransport.class
