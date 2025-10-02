@@ -6,8 +6,8 @@ This project demonstrates custom transport implementation in the Sentry Java SDK
 
 The `RoutingTransport` class implements the `ITransport` interface to:
 - Analyze event content (tags, exceptions, messages) for routing decisions
-- Create HTTP transports for each target DSN with caching
-- Send events to appropriate Sentry projects via real HTTP requests
+- Create HTTP transports for each target DSN 
+- Send events to appropriate Sentry projects
 
 ## Routing Configuration
 
@@ -33,12 +33,6 @@ Routing rules are defined in `src/main/resources/sentry-routing-config.json`:
 
 ### Fallback Configuration
 If the JSON file is not found or fails to load, the system uses hardcoded default routes defined in `RoutingConfiguration.getDefaultRoutes()`.
-
-### Configuration Features
-- **JSON-Based**: Easy to modify without recompilation
-- **Environment-Specific**: Different JSON files for dev/staging/production
-- **Hardcoded Fallback**: Ensures system always has routing configuration
-- **Hot-Reload Ready**: Can be extended to reload configuration at runtime
 
 ## Project Structure
 
@@ -73,13 +67,6 @@ If the JSON file is not found or fails to load, the system uses hardcoded defaul
    curl http://localhost:8081/api/generic-error
    ```
 
-3. **Monitor console output for routing decisions and HTTP responses**
-
-## Configuration Management
-
-### Current Approach
-DSNs and routing rules are defined in `SimpleRoutingConfig.PROJECT_BOXES` array for simplicity and demonstration purposes.
-
 ## Transport Implementation
 
 This implementation demonstrates use of Sentry's official transport extension points:
@@ -87,5 +74,5 @@ This implementation demonstrates use of Sentry's official transport extension po
 - Uses `setTransportFactory()` for SDK integration
 - Handles real event envelopes with content analysis
 - Makes actual HTTP requests to Sentry API endpoints
-- Manages transport lifecycle and rate limiting correctly
+- Manages transport lifecycle
 
