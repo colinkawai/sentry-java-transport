@@ -19,9 +19,10 @@ public class SentryTransportDemoApplication {
     public void initSentry() {
         Sentry.init(options -> {
             //transport will override the destination anyway
-            options.setDsn("https://YOUR_BASE_PROJECT_KEY@o0.ingest.sentry.io/YOUR_BASE_PROJECT_ID");
+            options.setDsn("https://YOUR_BASE_DSN_KEY@o0.ingest.sentry.io/YOUR_BASE_PROJECT_ID");
             options.setDebug(true);
             options.setLogger(new ConsoleLogger());
+            options.setTracesSampleRate(1.0);
             
             // Set our custom transport factory  
             options.setTransportFactory((sentryOptions, requestDetails) -> new RoutingTransport(sentryOptions));

@@ -1,0 +1,35 @@
+{
+  "projects": [
+    {
+      "name": "Gateway Project",
+      "dsn": "https://YOUR_GATEWAY_PROJECT_KEY@o0.ingest.sentry.io/YOUR_GATEWAY_PROJECT_ID",
+      "rules": {
+        "tags": ["gateway"],
+        "statusCodes": ["502"],
+        "exceptionTypes": ["BadGatewayException"],
+        "messageKeywords": ["502 Bad Gateway", "Upstream service"]
+      }
+    },
+    {
+      "name": "Internal Errors Project",
+      "dsn": "https://YOUR_INTERNAL_PROJECT_KEY@o0.ingest.sentry.io/YOUR_INTERNAL_PROJECT_ID",
+      "rules": {
+        "tags": ["internal"],
+        "statusCodes": ["500"],
+        "exceptionTypes": ["InternalServerException"],
+        "messageKeywords": ["500 Internal Server Error", "Database connection"]
+      }
+    },
+    {
+      "name": "Default Project",
+      "dsn": "https://YOUR_DEFAULT_PROJECT_KEY@o0.ingest.sentry.io/YOUR_DEFAULT_PROJECT_ID",
+      "rules": {
+        "tags": ["generic", "default"],
+        "statusCodes": ["400", "404"],
+        "exceptionTypes": ["RuntimeException", "Exception"],
+        "messageKeywords": ["Generic application error"]
+      }
+    }
+  ]
+}
+

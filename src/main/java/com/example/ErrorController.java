@@ -1,6 +1,8 @@
 package com.example;
 
 import io.sentry.Sentry;
+import io.sentry.ITransaction;
+import io.sentry.SpanStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -112,12 +114,40 @@ public class ErrorController {
         }
     }
 
+    @GetMapping("/transaction-test")
+    public ResponseEntity<Map<String, String>> transactionTest() {
+        ITransaction transaction = Sentry.startTransaction("test-transaction", "http.server");
+        
+        try {
+            Sentry.configureScope(scope -> {
+                scope.setTag("gateway", "true");
+                scope.setTag("transaction_type", "api_call");
+            });
+            
+            Thread.sleep(100);
+            transaction.setStatus(SpanStatus.OK);
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "Transaction sent for routing test");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            transaction.setStatus(SpanStatus.INTERNAL_ERROR);
+            transaction.setThrowable(e);
+            throw new RuntimeException(e);
+        } finally {
+            transaction.finish();
+        }
+    }
+
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         Map<String, String> response = new HashMap<>();
         response.put("status", "healthy");
         response.put("message", "Sentry Transport Demo is running");
-        response.put("endpoints", "/gateway-error, /internal-error, /generic-error, /custom-error");
+        response.put("endpoints", "/gateway-error, /internal-error, /generic-error, /custom-error, /transaction-test");
         
         return ResponseEntity.ok(response);
     }

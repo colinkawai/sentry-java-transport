@@ -11,46 +11,52 @@ The `RoutingTransport` class implements the `ITransport` interface to:
 
 ## Routing Configuration
 
-### Current Implementation
-Routing rules are defined in `SimpleRoutingConfig.java` using a simple array-based approach:
+### JSON Configuration (Production-Ready)
+Routing rules are defined in `src/main/resources/sentry-routing-config.json`:
 
-```java
-public static final ProjectBox[] PROJECT_BOXES = {
-    new ProjectBox(
-        "Gateway Project",
-        "https://gateway-key@o88872.ingest.us.sentry.io/gateway-project-id",
-        new String[]{"gateway"},                    // tags
-        new String[]{"502"},                        // status codes
-        new String[]{"BadGatewayException"},        // exception types
-        new String[]{"502 Bad Gateway"}             // message keywords
-    ),
-    // Additional project configurations...
-};
+```json
+{
+  "projects": [
+    {
+      "name": "Gateway Project",
+      "dsn": "https://YOUR_KEY@o0.ingest.sentry.io/YOUR_PROJECT_ID",
+      "rules": {
+        "tags": ["gateway"],
+        "statusCodes": ["502"],
+        "exceptionTypes": ["BadGatewayException"],
+        "messageKeywords": ["502 Bad Gateway", "Upstream service"]
+      }
+    }
+  ]
+}
 ```
 
-### Production Recommendations
-For production environments, consider:
+### Fallback Configuration
+If the JSON file is not found or fails to load, the system uses hardcoded default routes defined in `RoutingConfiguration.getDefaultRoutes()`.
 
-1. **External Configuration**: Load routing rules from JSON/YAML files for runtime updates
-2. **Environment-Specific Rules**: Different routing for dev/staging/production
-3. **Rule Validation**: Schema validation for routing configuration
-4. **Monitoring**: Metrics on routing decisions and transport performance
-5. **Fallback Handling**: Robust error handling for transport failures
+### Configuration Features
+- **JSON-Based**: Easy to modify without recompilation
+- **Environment-Specific**: Different JSON files for dev/staging/production
+- **Hardcoded Fallback**: Ensures system always has routing configuration
+- **Hot-Reload Ready**: Can be extended to reload configuration at runtime
 
 ## Project Structure
 
 - `RoutingTransport.java` - Custom transport implementation with multiplexing logic
-- `SimpleRoutingConfig.java` - Project routing configuration using array-based approach
-- `ErrorController.java` - REST endpoints that generate different types of errors
+- `RoutingConfiguration.java` - Loads routes from JSON with hardcoded fallback
+- `ProjectRoute.java` - Routing destination with matching criteria
+- `ErrorController.java` - REST endpoints that generate different telemetry types
 - `SentryTransportDemoApplication.java` - Spring Boot application with custom transport factory
 - `ConsoleLogger.java` - Debug logger for transport routing
+- `sentry-routing-config.json` - JSON configuration for routing rules
 
 ## API Endpoints
 
 - `GET /api/health` - Health check
-- `GET /api/gateway-error` - Generates gateway errors with "gateway" tags
-- `GET /api/internal-error` - Generates internal errors with "internal" tags
-- `GET /api/generic-error` - Generates generic errors for default routing
+- `GET /api/gateway-error` - Generates error events with "gateway" tags
+- `GET /api/internal-error` - Generates error events with "internal" tags
+- `GET /api/generic-error` - Generates generic error events
+- `GET /api/transaction-test` - Generates transaction telemetry for routing test
 - `POST /api/custom-error` - Accepts custom error payloads with configurable tags
 
 ## Running the Demo
